@@ -1,0 +1,3 @@
+D:\Qt\Tools\CMake_64\bin\cmake.exe -E rm -f CMakeFiles\FaultMonitoringSystem.dir/objects.a
+D:\Qt\Tools\mingw1310_64\bin\ar.exe qc CMakeFiles\FaultMonitoringSystem.dir/objects.a @CMakeFiles\FaultMonitoringSystem.dir\objects1.rsp
+D:\Qt\Tools\mingw1310_64\bin\g++.exe -g -mwindows -Wl,--whole-archive CMakeFiles\FaultMonitoringSystem.dir/objects.a -Wl,--no-whole-archive -o FaultMonitoringSystem.exe -Wl,--out-implib,libFaultMonitoringSystem.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\FaultMonitoringSystem.dir\linkLibs.rsp
