@@ -1,0 +1,78 @@
+/* cmocka test template
+ *
+ * HOW TO USE:
+ *  1. Copy this file: `cp tests/template.c.example tests/test_<module>.c` - <module> must match the src file name
+ *  2. Replace <module> placeholders
+ *  3. Write tests
+ *  4. List every test created in the `tests[]` in main
+ *  5. Run: `make test`
+ *
+ * - list of common assertions at bottom
+ */
+
+// these headers are required by cmocka - keep in order
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
+
+#include <stdlib.h>
+//TODO: #include "<module>.h" // header of the code under test
+
+// ex: basic test
+static void test_<behavior>(void **state) {
+  (void)state;
+
+  // set up inputs
+  // call function under test
+  // check result
+  assert_int_equal(1 + 1, 2); //FIXME
+}
+
+// ex: edge/error case
+static void test_<error>(void **state) {
+  (void)state;
+  assert_int_equal(my_function(NULL), -1);
+}
+
+// ex: setup/teardown
+static int setup(void **state) {
+  *state = malloc(sizeof(int));
+  return (*state == NULL) ? -1 : 0;
+}
+static int teardown(void **state) {
+  free(*state);
+  return 0;
+}
+
+// ex: mock syst call (needs a matching `WRAP_test_<module> line in Makefile - `WRAP_test_actions = -Wl,--wrap=kill`)
+int __wrap_kill(pid_t pid, int sig) {
+  check_expected(pid);
+  check_expected(sig);
+  return mock_type(int);
+}
+/* to use in a test:
+ * expect_value(__wrap_kill, pid 1234);
+ * expect_value(__wrap_kill, sig, SIGTERM);
+ * will_return(__wrap_kill, 0);
+ */
+
+
+// register tests
+int main(void) {
+  const struct CMUnitTest tests[] = {
+    cmock_unit_test(test_<behavior>),
+    cmocka_unit_test_setup_teardown(test_x, setup, teardown),
+  };
+  return cmocka_run_group_tests(tests, NULL, NULL);
+}
+
+/* COMMON ASSERTIONS:
+ *  assert_true(x) / assert_false(x)
+ *  assert_int_equal(actual, expected) / assert_int_not_equal(a, b)
+ *  assert_string_equal(actual, expected)
+ *  assert_null(p) / assert_non_null(p)
+ *  assert_float_equal(actual, expected, epsilon)
+ *  assert_in_range(x, min, max)
+ *  assert_memory_equal(a, b, size)
+ */
