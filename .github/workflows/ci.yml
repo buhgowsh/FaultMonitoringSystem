@@ -16,6 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     container: fedora:latest
     steps:
-      - run: dnf install -y git gcc make pkgconf-pkg-config cmocka-devel libasan libubsan
+      - run: dnf install -y git gcc make pkgconf-pkg-config libcmocka-devel libasan libubsan
       - uses: actions/checkout@v4
       - run: make test
