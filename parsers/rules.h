@@ -41,7 +41,7 @@ typedef struct {
 extern Rule *g_rules;
 extern int   g_n_rules;
 
-int rules_parse(const char* path);
+int rules_parse(const char *path);
 
 // Totals used to turn mb/gb into percentages
 //   set before yr_parse() is called
