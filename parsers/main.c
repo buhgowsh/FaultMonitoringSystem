@@ -85,7 +85,7 @@ static void print_config(void) {
     printf("max_logs: %u\n",   g_config.maxlog);
     printf("log_open: %s\n",   logopen_name(g_config.logopen));
     printf("log_close: %s\n",  logclose_name(g_config.logclose));
-    printf("halt_warn: %u\n",  g_config.haltwarn);
+    printf("halt_warning: %u\n",  g_config.haltwarn);
     printf("log_sound: %s\n",  sound_name(g_config.logsound));
     printf("halt_sound: %s\n", sound_name(g_config.haltsound));
     printf("inc_sound: %s\n",  sound_name(g_config.incsound));
@@ -95,12 +95,15 @@ static void print_config(void) {
 int main(int argc, char **argv) {
     const char *path = NULL;
     double ram_mb = 0, vram_mb = 0;
+	const char *config_path = NULL;
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--ram-mb") == 0 && i + 1 < argc)
             ram_mb = atof(argv[++i]);
         else if (strcmp(argv[i], "--vram-mb") == 0 && i + 1 < argc)
             vram_mb = atof(argv[++i]);
+		else if (strcmp(argv[i], "--config-file") == 0 && i + 1 < argc)
+			config_path = argv[++i];
         else
             path = argv[i];
     }
@@ -127,7 +130,7 @@ int main(int argc, char **argv) {
 	}
 
 	// CONFIG
-	error = config_parse(NULL);
+	error = config_parse(config_path);
 	switch (error) {
 	case 0:
 		printf("CONFIG PARSE SUCCEEDED\n");
