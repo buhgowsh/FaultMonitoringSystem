@@ -30,3 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
     timer->start(2000);                // refresh every 2 seconds
     model->refresh();                  // initial fill
 }
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
