@@ -4,7 +4,18 @@ A lightweight Linux application that mointors running processes, checks their re
 ## Overview
 Many processes run at once on a Linux system, and some can consume excessive CPU or memory, slowing down the system or interfering with other applications. The Fault Monitoring System automates the detection of these conditions. Administrators define thresholds for individual processes, and the system responds according to the rules they set, reducing the need for constant manual supervision.
 
----
+
+## Table of Contents
+- [Features](#features)
+- [How It Works](#how-it-works)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Rules](#rules)
+- [Logs](#logs)
+- [Team](#team)
+
 
 ## Features
 - Per-process thresholds for CPU utilization, physical memory, and virtual memory usage
@@ -14,12 +25,10 @@ Many processes run at once on a Linux system, and some can consume excessive CPU
 - Event logging that records detected faults and the actions taken
 - Separate log viewer for browsing the fault history without interacting with the kernel directly
 
----
 
 ## How It Works
 [diagram]
 
----
 
 ## Tech Stack
 | Layer | Technology |
@@ -49,7 +58,6 @@ Many processes run at once on a Linux system, and some can consume excessive CPU
 └── README.md
 ```
 
----
 
 ## Getting Started
 ### Prerequisites
@@ -71,19 +79,15 @@ Many processes run at once on a Linux system, and some can consume excessive CPU
 ```bash
 ```
 
----
 
 ## Usage
 
----
 
 ## Rules
 
----
 
 ## Logs
 
----
 
 ## Team
 |Name|Role|
