@@ -1,8 +1,8 @@
-RULES-OBJS= rules.tab.c rules_lexer.c rules.h
-CONFIG-OBJS= config.tab.c config_lexer.c config.h
+RULES-OBJS= rules.tab.c rules_lexer.c
+CONFIG-OBJS= config.tab.c config_lexer.c
 
-parser: main.c $(RULES-OBJS)
-	$(CC) -o $@ main.c rules.tab.c rules_lexer.c
+parser: main.c $(RULES-OBJS) rules.h $(CONFIG-OBJS) config.h
+	$(CC) -o $@ main.c $(RULES-OBJS) $(CONFIG-OBJS)
 
 clean: clean-rules clean-config
 	rm -f parser
@@ -17,11 +17,14 @@ rules_lexer.c: rules.l rules.tab.h
 clean-rules:
 	rm -f rules.tab.c rules.tab.h rules_lexer.c
 
-##-- Config Parser --##
+##-- Config 	Parser --##
+config: config.tab.c config_lexer.c config.h
+	$(CC) -o $@ config.tab.c config_lexer.c
+
 config.tab.c config.tab.h: config.y config.h
 	bison -p "yc_" -Wall -d config.y
 
-lex.yc_.c: config.l config.tab.h
+config_lexer.c: config.l config.tab.h
 	flex -P "yc_" config.l
 
 clean-config:

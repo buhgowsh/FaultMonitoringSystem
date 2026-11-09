@@ -1,7 +1,8 @@
+#include "config.h"
 #include "rules.h"
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 static const char *res_name(Resource r) {
     return r == RES_CPU ? "cpu" : r == RES_RAM ? "ram" : "vram";
@@ -46,6 +47,51 @@ static void print_rules(void) {
     }
 }
 
+static const char *sound_name(SoundOpts s) {
+    return s == S_NONE ? "none" : "bell";
+}
+
+static const char *logopen_name(LogOpenOpts l) {
+    return l == LO_NEVER ? "never" : "always";
+}
+
+static const char *logclose_name(LogCloseOpts l) {
+    switch (l) {
+    case LC_NEVER:
+        return "never";
+    case LC_CRASH:
+        return "crashes";
+    default: /* LC_ALWAYS */
+        return "always";
+    }
+}
+
+static const char *logsplit_name(LogSplitOpts l) {
+    switch (l) {
+    case LS_NEVER:
+        return "never";
+    case LS_DAILY:
+        return "daily";
+    case LS_WEEKLY:
+        return "weekly";
+    default: /* LS_MONTHLY */
+        return "monthly";
+    }
+}
+
+// Debug testing
+static void print_config(void) {
+    printf("log_split: %s\n",  logsplit_name(g_config.logsplit));
+    printf("max_logs: %u\n",   g_config.maxlog);
+    printf("log_open: %s\n",   logopen_name(g_config.logopen));
+    printf("log_close: %s\n",  logclose_name(g_config.logclose));
+    printf("halt_warn: %u\n",  g_config.haltwarn);
+    printf("log_sound: %s\n",  sound_name(g_config.logsound));
+    printf("halt_sound: %s\n", sound_name(g_config.haltsound));
+    printf("inc_sound: %s\n",  sound_name(g_config.incsound));
+    printf("dec_sound: %s\n",  sound_name(g_config.decsound));
+}
+
 int main(int argc, char **argv) {
     const char *path = NULL;
     double ram_mb = 0, vram_mb = 0;
@@ -69,11 +115,26 @@ int main(int argc, char **argv) {
 	int error = rules_parse(path);
 	switch (error) {
 	case 0:
-		printf("PARSE SUCCEEDED\n");
+		printf("RULES PARSE SUCCEEDED\n");
 		print_rules();
 		break;
 	case 1:
-		printf("PARSE FAILED\n");
+		printf("RULES PARSE FAILED\n");
+		return 1;
+	case 2:
+		printf("ERROR: File %s doesn't exist\n", path);
+		return 2;
+	}
+
+	// CONFIG
+	error = config_parse(NULL);
+	switch (error) {
+	case 0:
+		printf("CONFIG PARSE SUCCEEDED\n");
+		print_config();
+		break;
+	case 1:
+		printf("CONFIG PARSE FAILED\n");
 		return 1;
 	case 2:
 		printf("ERROR: File %s doesn't exist\n", path);
