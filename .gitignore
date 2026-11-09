@@ -1,0 +1,7 @@
+/parsers/parser
+/parsers/*.tab.*
+/parsers/*_lexer.c
+
+tests/test_*
+!tests/test_*.c
+*.o
