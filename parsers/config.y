@@ -84,25 +84,25 @@ item
     ;
 
 logsplitopts
-    : NEVER                 { g_config.logsplit = LS_NEVER; }
-    | DAILY                 { g_config.logsplit = LS_DAILY; } 
-    | WEEKLY                { g_config.logsplit = LS_WEEKLY; } 
-    | MONTHLY               { g_config.logsplit = LS_MONTHLY; } 
+    : NEVER                     { g_config.logsplit = LS_NEVER; }
+    | DAILY                     { g_config.logsplit = LS_DAILY; } 
+    | WEEKLY                    { g_config.logsplit = LS_WEEKLY; } 
+    | MONTHLY                   { g_config.logsplit = LS_MONTHLY; } 
     ;
 
 maxlogopts
-    : NUMBER                { g_config.maxlog = $1; }
+    : NUMBER                    { g_config.maxlog = $1; }
     ;
 
 logopenopts
-    : NEVER                 { g_config.logopen = LO_NEVER; }
-    | ALWAYS                { g_config.logopen = LO_ALWAYS; }
+    : NEVER                     { g_config.logopen = LO_NEVER; }
+    | ALWAYS                    { g_config.logopen = LO_ALWAYS; }
     ;
 
 logcloseopts
-    : CRASH                 { g_config.logclose = LC_CRASH; }
-    | NEVER                 { g_config.logclose = LC_NEVER; }
-    | ALWAYS                { g_config.logclose = LC_ALWAYS; }
+    : CRASH                     { g_config.logclose = LC_CRASH; }
+    | NEVER                     { g_config.logclose = LC_NEVER; }
+    | ALWAYS                    { g_config.logclose = LC_ALWAYS; }
     ;
 
 haltwarnopts
