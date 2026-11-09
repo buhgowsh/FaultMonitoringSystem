@@ -1,0 +1,21 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y build-essential pkg-config libcmocka-dev
+      - run: make test
+
+  fedora:
+    runs-on: ubuntu-latest
+    container: fedora:latest
+    steps:
+      - run: dnf install -y git gcc make pkgconf-pkg-config cmocka-devel libasan libubsan
+      - uses: actions/checkout@v4
+      - run: make test
