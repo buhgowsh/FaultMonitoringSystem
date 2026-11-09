@@ -15,3 +15,6 @@ tests/test_%: tests/test_%.c
 
 clean:
 	rm -f $(TESTS)
+
+all:
+	cd parsers; $(MAKE)
