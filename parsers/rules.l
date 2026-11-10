@@ -45,13 +45,10 @@ mb|gb                   {
                             return SIZE;
                         }
 priority                return PRIORITY;
-inc|incr|incre|increm|increme|incremen|increment    return INC;
-dec|decr|decre|decrem|decreme|decremen|decrement    return DEC;
+inc|incr|incre|increa|increas|increase    return INC;
+dec|decr|decre|decrea|decreas|decrease    return DEC;
 
 {WORD}                  {
-                            // TODO depending on implementation, converting to lowercase
-                            //   might be unecessary; use below if so
-                            //yr_lval.str = strndup(yr_text + 1, yr_leng - 2);
                             // Get rid of the brackets and convert to lowercase
                             const int len = strlen(yr_text) - 1; // -2 brackets +1 null byte
                             char* ret = malloc(len * sizeof(char));
@@ -59,10 +56,6 @@ dec|decr|decre|decrem|decreme|decremen|decrement    return DEC;
                                 ret[i] = tolower(yr_text[i+1]);
                             }
                             ret[len-1] = '\0'; // Explicity set the null byte just in case
-                            //printf("%d\n", len);
-                            //for (int i = 0; i < len; i++) {
-                            //    printf("%d %X\n", i, ret[i]);
-                            //}
                             yr_lval.str = ret;
 
                             return WORD;
