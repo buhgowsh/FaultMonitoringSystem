@@ -1,13 +1,16 @@
 /* cmocka test template
  *
  * HOW TO USE:
- *  1. Copy this file: `cp tests/template.c.example tests/test_<module>.c` - <module> must match the src file name
+ *  1. Copy this file: `cp tests/template.c.example tests/test_<module>.c` 
+ *    - <module> must match the src file name
  *  2. Replace <module> placeholders
- *  3. Write tests
+ *  3. Write tests 
+ *    - every test must be named test_<behavior> and only tests one behavior
+ *    - eahc test should include a normal case, edge case, and error case
  *  4. List every test created in the `tests[]` in main
  *  5. Run: `make test`
  *
- * - list of common assertions at bottom
+ * - list of cmocka functions and common assertions at bottom
  */
 
 // these headers are required by cmocka - keep in order
@@ -17,17 +20,27 @@
 #include <cmocka.h>
 
 #include <stdlib.h>
-//TODO: #include "<module>.h" // header of the code under test
+// add any other headers needed
+
+// #include "<module>.h" // header of the code under test
+
+
 
 // ex: basic test
+// note: `static void fn(void **state)` signature is required
 static void test_<behavior>(void **state) {
   (void)state;
 
   // set up inputs
+  int input = 2
+
   // call function under test
-  // check result
-  assert_int_equal(1 + 1, 2); //FIXME
+  int result = my_function(input)
+
+  // check result - (actual_val, expected_val)
+  assert_int_equal(result, 4);
 }
+
 
 // ex: edge/error case
 static void test_<error>(void **state) {
@@ -35,9 +48,15 @@ static void test_<error>(void **state) {
   assert_int_equal(my_function(NULL), -1);
 }
 
+
 // ex: setup/teardown
+// use when multiple tests need the same objs
+// setup runs before each test its attached to
+// teardown runs after each test its attached to (even if it fails)
+// func names can be chosen
+/*
 static int setup(void **state) {
-  *state = malloc(sizeof(int));
+  state = malloc(sizeof(int));
   return (*state == NULL) ? -1 : 0;
 }
 static int teardown(void **state) {
@@ -45,34 +64,79 @@ static int teardown(void **state) {
   return 0;
 }
 
-// ex: mock syst call (needs a matching `WRAP_test_<module> line in Makefile - `WRAP_test_actions = -Wl,--wrap=kill`)
+// func that uses setup data
+static void test_uses_setup_data(void **state) {
+  int *val = *state;
+  assert_int_equal(*val, 10);
+}
+*/
+
+/* register test in main:
+cmocka_unit_test_setup_teardown(test_uses_setup_data, setup, teardown)
+  or
+cmocka_unit_test_setup(fn, setup)
+  or
+cmocka_unit_test_teardown(fn, teardown)
+*/
+
+
+// ex: mock syst call 
+// used to create fake system calls so unit tests dont effect your actual machine (like kill(), setpriority(), etc)
+// needs a matching `WRAP_test_<module> line in Makefile: `WRAP_test_<module> = -Wl,--wrap=<name>` 
+// - linker flag: `--wrap=<name>` redirects every call to <name> in the code to `__wrap_<name>`
+// - real function is still reachable as `__real_<name>` if needed
+// - dont forget to add necessary headers
+
+/* ex for kill(): (needs signal.h and syst/types.h headers)
 int __wrap_kill(pid_t pid, int sig) {
   check_expected(pid);
   check_expected(sig);
   return mock_type(int);
 }
-/* to use in a test:
+*/
+/* to use *in* a test:
  * expect_value(__wrap_kill, pid 1234);
  * expect_value(__wrap_kill, sig, SIGTERM);
  * will_return(__wrap_kill, 0);
+ * // assert
  */
 
 
 // register tests
 int main(void) {
   const struct CMUnitTest tests[] = {
-    cmock_unit_test(test_<behavior>),
-    cmocka_unit_test_setup_teardown(test_x, setup, teardown),
+    cmocka_unit_test(test_<behavior>),
+    // ex: cmocka_unit_test_setup_teardown(test_fn, setup_fn, teardown_fn), // `cmocka_unit_test_setup_teardown` is provided by cmocka
   };
   return cmocka_run_group_tests(tests, NULL, NULL);
 }
 
-/* COMMON ASSERTIONS:
- *  assert_true(x) / assert_false(x)
- *  assert_int_equal(actual, expected) / assert_int_not_equal(a, b)
- *  assert_string_equal(actual, expected)
- *  assert_null(p) / assert_non_null(p)
- *  assert_float_equal(actual, expected, epsilon)
- *  assert_in_range(x, min, max)
- *  assert_memory_equal(a, b, size)
+/* CMOCKA PREDEF FUNCTIONS:
+ *  cmocka_unit_test(fn)
+ *  cmocka_unit_test_setup_teardown(fn, setup, teardown)
+ *  cmocka_run_group_tests(...)
+ *
+ *  expect_value(fn, param, exp)      param must equal exp
+ *  will_return(fn, exp)              queue a return val
+ *  will_return_count(fn, exp, n)     queue a return val for n calls
+ *  mock_type(type)                   inside fake: take next val
+ *  mock_ptr_type(type)               inside fake: take next ptr ?
+ *  etc.
+ *  - every `expect_*/will_return must be consumed, if code never calls fake or calls it fewer/more than expected test fails
+ * 
+ * COMMON ASSERTIONS:
+ *  assert_true(x) / assert_false(x)        booleans, conditions
+ *  assert_int_equal(actual, expected)      ints, enums, error codes, PIDS
+ *  assert_int_not_equal(a, b)              
+ *  assert_string_equal(actual, expected)   strings, DO NOT USE == to compare
+ *  assert_null(p) / assert_non_null(p)     pointers
+ *  assert_float_equal(act, exp, epsilon)   floating pt
+ *  assert_in_range(x, min, max)            min <= x <= max
+ *  assert_memory_equal(a, b, size)         structs and byte buffers
+ *  fail()                                  force failure
+ *  skip()                                  mark a test as skipped
+ *
+ * on failure, cmocka will print the file, line num, and both values
  */
+
+
