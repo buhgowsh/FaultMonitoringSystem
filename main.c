@@ -7,6 +7,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "rules.h"
+#include "rule_engine.h"
+#include <unistd.h>
+
 static volatile sig_atomic_t running = 1;
 
 static void request_shutdown(int signal_number)
@@ -51,8 +55,12 @@ static void display_snapshot(const ProcessSnapshot *snapshot)
     fflush(stdout);
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    
+    if (rule_engine_init(argc, argv) != EXIT_SUCCESS)
+        return EXIT_FAILURE;
+
     if (readproc_init() != 0) {
         fprintf(stderr, "Unable to read Linux clock ticks or page size.\n");
         return EXIT_FAILURE;
@@ -92,6 +100,8 @@ int main(void)
         readproc_calculate_cpu(&current, &previous);
         display_snapshot(&current);
         // Later: evaluate rules and log any actual violations here.
+
+        rule_engine_evaluate(&current);
 
         readproc_free_snapshot(&previous);
         previous = current; // Takes ownership of the new allocation.
